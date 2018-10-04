@@ -1,23 +1,24 @@
 <?php
 declare(strict_types=1);
 
-namespace N1215\RequestParameterExtractor\Extractors;
+namespace N1215\RequestParameterExtractor\Extractors\Typed;
 
-use N1215\RequestParameterExtractor\IExtractor;
+use N1215\RequestParameterExtractor\ExtractorInterface;
+use N1215\RequestParameterExtractor\Extractors\Mappable;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
  * Class AsNullableInt
- * @package N1215\RequestParameterExtractor\Extractors
+ * @package N1215\RequestParameterExtractor\Extractors\Typed
  */
-class AsNullableInt implements IExtractor
+class AsNullableInt implements ExtractorInterface
 {
     use Mappable;
 
-    /** @var IExtractor */
+    /** @var ExtractorInterface */
     private $original;
 
-    public function __construct(IExtractor $original)
+    public function __construct(ExtractorInterface $original)
     {
         $this->original = $original;
     }

@@ -3,10 +3,10 @@ declare(strict_types=1);
 
 namespace N1215\RequestParameterExtractor\Extractors;
 
-use N1215\RequestParameterExtractor\IExtractor;
+use N1215\RequestParameterExtractor\ExtractorInterface;
 
 /**
- * @mixin IExtractor
+ * @mixin ExtractorInterface
  */
 trait Mappable
 {

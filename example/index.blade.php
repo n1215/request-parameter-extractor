@@ -3,7 +3,11 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-class Id
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Server\RequestHandlerInterface;
+
+class Id implements \JsonSerializable
 {
     /** @var int */
     private $value;
@@ -22,96 +26,63 @@ class Id
     {
         return $this->value === $another->value;
     }
+
+    public function jsonSerialize()
+    {
+        return ['value' => $this->value];
+    }
 }
 
-$requestFactory = new \Zend\Diactoros\ServerRequestFactory();
-$extractors = new \N1215\RequestParameterExtractor\Factory();
+class SampleRequestHandler implements RequestHandlerInterface
+{
+    private $extractor;
 
-call_user_func(function () use ($requestFactory, $extractors) {
-    $request = $requestFactory
-        ->createServerRequest('GET', 'https://example.com')
-        ->withQueryParams(['id' => '1']);
+    public function __construct(\N1215\RequestParameterExtractor\Factory $extractors)
+    {
+        $queryParams = $extractors->fromQueryParams();
 
-    $extractor = $extractors
-        ->fromQueryParam('id')
-        ->asInt()
-        ->map(function (int $id): Id {
-            return new Id($id);
-        });
+        $this->extractor = $extractors->assoc([
+            'id' => $queryParams->get('id')->asNullableInt()
+                ->map(function (int $id): Id {
+                    return new Id($id);
+                }),
+            'name' => $queryParams->get('name')->asNonEmptyString('no name'),
+            'token' => $extractors->fromHeaderLine('Authorization')
+                ->map(function (string $value) {
+                    return str_replace('Bearer ', '', $value);
+                }),
+            'my_cookie' => $extractors->fromCookieParams()->get('my_cookie')->asNullableString(),
+        ]);
+    }
 
-    $id = $extractor->extract($request);
+    public function handle(ServerRequestInterface $request): ResponseInterface
+    {
+        $params = $this->extractor->extract($request);
+        return new \Zend\Diactoros\Response\JsonResponse($params);
+    }
+}
 
-    assert($id->equals(new Id(1)));
-    var_dump($id);
-});
+$request = (new \Zend\Diactoros\ServerRequestFactory())
+    ->createServerRequest('GET', 'https://example.com')
+    ->withQueryParams([
+        'id' => '1',
+        'name' => ''
+    ])
+    ->withHeader('Authorization', 'Bearer dummy_bearer_token')
+    ->withCookieParams(['my_cookie' => 'dummy_cookie_value']);
 
-call_user_func(function () use ($requestFactory, $extractors) {
-    $request = $requestFactory
-        ->createServerRequest('GET', 'https://example.com');
+$handler = new SampleRequestHandler(new \N1215\RequestParameterExtractor\Factory());
+$response = $handler->handle($request);
 
-    $extractor = $extractors
-        ->fromQueryParam('id')
-        ->asInt(2);
+$expected = [
+    'id' => ['value' => 1],
+    'name' => 'no name',
+    'token' => 'dummy_bearer_token',
+    'my_cookie' => 'dummy_cookie_value',
+];
 
-    $id = $extractor->extract($request);
+$contents = $response->getBody()->getContents();
+$json = \json_decode($contents, true);
+assert($expected === $json);
 
-    assert($id === 2);
-    var_dump($id);
-});
-
-call_user_func(function () use ($requestFactory, $extractors) {
-    $request = $requestFactory
-        ->createServerRequest('GET', 'https://example.com')
-        ->withQueryParams(['id' => '1']);
-
-    $extractor = $extractors
-        ->fromQueryParam('id');
-
-    $id = $extractor->extract($request);
-
-    assert($id === '1');
-    var_dump($id);
-});
-
-call_user_func(function () use ($requestFactory, $extractors) {
-    $request = $requestFactory
-        ->createServerRequest('GET', 'https://example.com')
-        ->withQueryParams(['id' => '1']);
-
-    $extractor = $extractors
-        ->fromQueryParam('id')
-        ->asInt();
-
-    $id = $extractor->extract($request);
-
-    assert($id === 1);
-    var_dump($id);
-});
-
-call_user_func(function () use ($requestFactory, $extractors) {
-    $request = $requestFactory
-        ->createServerRequest('GET', 'https://example.com');
-
-    $extractor = $extractors
-        ->fromQueryParam('id')
-        ->asInt(2);
-
-    $id = $extractor->extract($request);
-
-    assert($id === 2);
-    var_dump($id);
-});
-
-call_user_func(function () use ($requestFactory, $extractors) {
-    $request = $requestFactory
-        ->createServerRequest('GET', 'https://example.com');
-
-    $extractor = $extractors
-        ->fromQueryParam('id')
-        ->asNullableInt();
-
-    $id = $extractor->extract($request);
-
-    assert($id === null);
-    var_dump($id);
-});
+echo $contents . PHP_EOL;

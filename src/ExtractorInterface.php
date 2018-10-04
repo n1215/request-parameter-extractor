@@ -5,7 +5,7 @@ namespace N1215\RequestParameterExtractor;
 
 use Psr\Http\Message\ServerRequestInterface;
 
-interface IExtractor
+interface ExtractorInterface
 {
     public function extract(ServerRequestInterface $request);
 }

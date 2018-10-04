@@ -1,26 +1,27 @@
 <?php
 declare(strict_types=1);
 
-namespace N1215\RequestParameterExtractor\Extractors;
+namespace N1215\RequestParameterExtractor\Extractors\Typed;
 
-use N1215\RequestParameterExtractor\IExtractor;
+use N1215\RequestParameterExtractor\ExtractorInterface;
+use N1215\RequestParameterExtractor\Extractors\Mappable;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
  * Class AsInt
- * @package N1215\RequestParameterExtractor\Extractors
+ * @package N1215\RequestParameterExtractor\Extractors\Typed
  */
-class AsInt implements IExtractor
+class AsInt implements ExtractorInterface
 {
     use Mappable;
 
-    /** @var IExtractor */
+    /** @var ExtractorInterface */
     private $original;
 
     /** @var int|null */
     private $default;
 
-    public function __construct(IExtractor $original, int $default = null)
+    public function __construct(ExtractorInterface $original, int $default = null)
     {
         $this->original = $original;
         $this->default = $default;
