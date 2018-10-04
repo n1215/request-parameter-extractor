@@ -1,0 +1,40 @@
+{
+    "name": "n1215/request-parameter-extractor",
+    "description": "Extract parameters from PSR-7 HTTP Request",
+    "keywords": [
+        "psr-7",
+        "http request"
+    ],
+    "type": "library",
+    "homepage": "https://github.com/n1215/request-parameter-extractor",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "n1215",
+            "email": "knakae1215@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=7.2.0",
+        "psr/http-message": "^1.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "N1215\\RequestParameterExtractor\\": "src"
+        }
+    },
+    "require-dev": {
+        "zendframework/zend-diactoros": "^2.0",
+        "phpunit/phpunit": "^6.5"
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "N1215\\RequestParameterExtractor\\": "tests"
+        }
+    },
+    "scripts": {
+        "test": [
+            "vendor/bin/phpunit"
+        ]
+    }
+}
