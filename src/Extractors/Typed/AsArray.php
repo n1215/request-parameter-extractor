@@ -6,7 +6,7 @@ namespace N1215\RequestParameterExtractor\Extractors\Typed;
 use N1215\RequestParameterExtractor\ArrayExtractorInterface;
 use N1215\RequestParameterExtractor\ExtractorInterface;
 use N1215\RequestParameterExtractor\Extractors\ArrayKey\ArrayGet;
-use N1215\RequestParameterExtractor\Extractors\Mappable;
+use N1215\RequestParameterExtractor\Extractors\HighOrder;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
@@ -15,7 +15,7 @@ use Psr\Http\Message\ServerRequestInterface;
  */
 class AsArray implements ArrayExtractorInterface
 {
-    use Mappable;
+    use HighOrder;
     use ArrayGet;
 
     /** @var ExtractorInterface */

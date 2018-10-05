@@ -5,10 +5,14 @@ namespace N1215\RequestParameterExtractor\Extractors;
 
 use N1215\RequestParameterExtractor\AssocExtractorInterface;
 use N1215\RequestParameterExtractor\ExtractorInterface;
+use N1215\RequestParameterExtractor\Extractors\ArrayKey\AssocGet;
 use Psr\Http\Message\ServerRequestInterface;
 
-class ToAssoc implements AssocExtractorInterface
+class ZipWithKey implements AssocExtractorInterface
 {
+    use HighOrder;
+    use AssocGet;
+
     /** @var ExtractorInterface[] */
     private $extractors;
 

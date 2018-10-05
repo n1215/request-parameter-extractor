@@ -12,7 +12,7 @@ use Psr\Http\Message\ServerRequestInterface;
  */
 class FromRequestTarget implements StringExtractorInterface
 {
-    use Mappable;
+    use HighOrder;
 
     /**
      * @param ServerRequestInterface $request

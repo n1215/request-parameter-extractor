@@ -4,7 +4,8 @@ declare(strict_types=1);
 namespace N1215\RequestParameterExtractor\Extractors\Typed;
 
 use N1215\RequestParameterExtractor\ExtractorInterface;
-use N1215\RequestParameterExtractor\Extractors\Mappable;
+use N1215\RequestParameterExtractor\Extractors\HighOrder;
+use N1215\RequestParameterExtractor\NonEmptyStringExtractorInterface;
 use N1215\RequestParameterExtractor\StringExtractorInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -12,9 +13,9 @@ use Psr\Http\Message\ServerRequestInterface;
  * Class AsNonEmptyString
  * @package N1215\RequestParameterExtractor\Extractors\Typed
  */
-class AsNonEmptyString implements StringExtractorInterface
+class AsNonEmptyString implements NonEmptyStringExtractorInterface
 {
-    use Mappable;
+    use HighOrder;
 
     /** @var ExtractorInterface */
     private $original;

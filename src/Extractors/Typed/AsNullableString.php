@@ -4,16 +4,17 @@ declare(strict_types=1);
 namespace N1215\RequestParameterExtractor\Extractors\Typed;
 
 use N1215\RequestParameterExtractor\ExtractorInterface;
-use N1215\RequestParameterExtractor\Extractors\Mappable;
+use N1215\RequestParameterExtractor\Extractors\HighOrder;
+use N1215\RequestParameterExtractor\NullableStringExtractorInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
  * Class AsNullableString
  * @package N1215\RequestParameterExtractor\Extractors\Typed
  */
-class AsNullableString implements ExtractorInterface
+class AsNullableString implements NullableStringExtractorInterface
 {
-    use Mappable;
+    use HighOrder;
 
     /** @var ExtractorInterface */
     private $original;

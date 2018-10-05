@@ -3,76 +3,85 @@ declare(strict_types=1);
 
 namespace N1215\RequestParameterExtractor;
 
-use N1215\RequestParameterExtractor\Extractors\FromBody;
-use N1215\RequestParameterExtractor\Extractors\FromCookieParams;
-use N1215\RequestParameterExtractor\Extractors\FromHeader;
-use N1215\RequestParameterExtractor\Extractors\FromHeaderLine;
-use N1215\RequestParameterExtractor\Extractors\FromHeaders;
-use N1215\RequestParameterExtractor\Extractors\FromMethod;
-use N1215\RequestParameterExtractor\Extractors\FromProtocolVersion;
-use N1215\RequestParameterExtractor\Extractors\FromQueryParams;
-use N1215\RequestParameterExtractor\Extractors\FromRequestTarget;
-use N1215\RequestParameterExtractor\Extractors\FromUri;
-use N1215\RequestParameterExtractor\Extractors\ToAssoc;
+use N1215\RequestParameterExtractor\Extractors;
 
+/**
+ * Class Factory
+ * @package N1215\RequestParameterExtractor
+ */
 class Factory
 {
-    public function fromBody(): FromBody
+    public function fromBody(): BodyExtractorInterface
     {
-        return new FromBody();
+        return new Extractors\FromBody();
     }
 
-    public function fromCookieParams(): FromCookieParams
+    public function fromCookieParams(): AssocExtractorInterface
     {
-        return new FromCookieParams();
+        return new Extractors\FromCookieParams();
     }
 
-    public function fromHeader(string $name): FromHeader
+    public function fromHeader(string $name): ArrayExtractorInterface
     {
-        return new FromHeader($name);
+        return new Extractors\FromHeader($name);
     }
 
-    public function fromHeaderLine(string $name): FromHeaderLine
+    public function fromHeaderLine(string $name): StringExtractorInterface
     {
-        return new FromHeaderLine($name);
+        return new Extractors\FromHeaderLine($name);
     }
 
-    public function fromHeaders(): FromHeaders
+    public function fromHeaders(): AssocExtractorInterface
     {
-        return new FromHeaders();
+        return new Extractors\FromHeaders();
     }
 
-    public function fromMethod(): FromMethod
+    public function fromMethod(): StringExtractorInterface
     {
-        return new FromMethod();
+        return new Extractors\FromMethod();
     }
 
-    public function fromProtocolVersion(): FromProtocolVersion
+    public function fromProtocolVersion(): StringExtractorInterface
     {
-        return new FromProtocolVersion();
+        return new Extractors\FromProtocolVersion();
     }
 
-    public function fromQueryParams(): FromQueryParams
+    public function fromQueryParams(): AssocExtractorInterface
     {
-        return new FromQueryParams();
+        return new Extractors\FromQueryParams();
     }
 
-    public function fromRequestTarget(): FromRequestTarget
+    public function fromRequestTarget(): StringExtractorInterface
     {
-        return new FromRequestTarget();
+        return new Extractors\FromRequestTarget();
     }
 
-    public function fromUri(): FromUri
+    public function fromUri(): UriExtractorInterface
     {
-        return new FromUri();
+        return new Extractors\FromUri();
+    }
+
+    public function map(callable $callback): CastableExtractorInterface
+    {
+        return new Extractors\Map(new Extractors\Identity(), $callback);
+    }
+
+    public function filter(callable $callback): CastableExtractorInterface
+    {
+        return new Extractors\Filter(new Extractors\Identity(), $callback);
+    }
+
+    public function zip(ExtractorInterface ...$extractors): ArrayExtractorInterface
+    {
+        return new Extractors\Zip(...$extractors);
     }
 
     /**
      * @param ExtractorInterface[] $extractors
-     * @return ToAssoc
+     * @return AssocExtractorInterface
      */
-    public function assoc(array $extractors): ToAssoc
+    public function zipWithKey(array $extractors): AssocExtractorInterface
     {
-        return new ToAssoc($extractors);
+        return new Extractors\ZipWithKey($extractors);
     }
 }

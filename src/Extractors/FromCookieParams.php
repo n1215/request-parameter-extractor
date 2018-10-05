@@ -13,7 +13,7 @@ use Psr\Http\Message\ServerRequestInterface;
  */
 class FromCookieParams implements AssocExtractorInterface
 {
-    use Mappable;
+    use HighOrder;
     use AssocGet;
 
     /**

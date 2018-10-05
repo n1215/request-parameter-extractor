@@ -4,19 +4,19 @@ declare(strict_types=1);
 namespace N1215\RequestParameterExtractor\Extractors\ArrayKey;
 
 use N1215\RequestParameterExtractor\AssocExtractorInterface;
-use N1215\RequestParameterExtractor\ExtractorInterface;
-use N1215\RequestParameterExtractor\Extractors\Mappable;
-use N1215\RequestParameterExtractor\Extractors\Typed\Typing;
+use N1215\RequestParameterExtractor\CastableExtractorInterface;
+use N1215\RequestParameterExtractor\Extractors\HighOrder;
+use N1215\RequestParameterExtractor\Extractors\Typed\Cast;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
  * Class FromAssoc
  * @package N1215\RequestParameterExtractor\Extractors
  */
-class FromAssoc implements ExtractorInterface
+class FromAssoc implements CastableExtractorInterface
 {
-    use Typing;
-    use Mappable;
+    use Cast;
+    use HighOrder;
 
     /**
      * @var AssocExtractorInterface

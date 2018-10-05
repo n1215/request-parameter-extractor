@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace N1215\RequestParameterExtractor\Extractors;
 
-use N1215\RequestParameterExtractor\ExtractorInterface;
 use N1215\RequestParameterExtractor\StringExtractorInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -13,7 +12,7 @@ use Psr\Http\Message\ServerRequestInterface;
  */
 class FromProtocolVersion implements StringExtractorInterface
 {
-    use Mappable;
+    use HighOrder;
 
     /**
      * @param ServerRequestInterface $request

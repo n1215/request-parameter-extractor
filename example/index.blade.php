@@ -41,17 +41,29 @@ class SampleRequestHandler implements RequestHandlerInterface
     {
         $queryParams = $extractors->fromQueryParams();
 
-        $this->extractor = $extractors->assoc([
+        $this->extractor = $extractors->zipWithKey([
             'id' => $queryParams->get('id')->asNullableInt()
                 ->map(function (int $id): Id {
                     return new Id($id);
                 }),
-            'name' => $queryParams->get('name')->asNonEmptyString('no name'),
+            'name' => $queryParams->get('name')
+                ->filter(function (string $value) {
+                    return !empty($value);
+                })
+                ->asString('no name'),
             'token' => $extractors->fromHeaderLine('Authorization')
                 ->map(function (string $value) {
                     return str_replace('Bearer ', '', $value);
                 }),
             'my_cookie' => $extractors->fromCookieParams()->get('my_cookie')->asNullableString(),
+            'host' => $extractors->fromUri()->getHost(),
+            'json' => $extractors->fromBody()->getJson(),
+            'zip' => $extractors->zip($extractors->fromMethod(), $extractors->fromUri()->getScheme()),
+            'port' => $extractors
+                ->map(function (ServerRequestInterface $request) {
+                    return $request->getUri()->getPort();
+                })
+                ->asNullableInt()
         ]);
     }
 
@@ -62,8 +74,10 @@ class SampleRequestHandler implements RequestHandlerInterface
     }
 }
 
+$streamFactory = new \Zend\Diactoros\StreamFactory();
 $request = (new \Zend\Diactoros\ServerRequestFactory())
-    ->createServerRequest('GET', 'https://example.com')
+    ->createServerRequest('GET', 'https://example.com:8080')
+    ->withBody($streamFactory->createStream('{"message": "hello"}'))
     ->withQueryParams([
         'id' => '1',
         'name' => ''
@@ -79,6 +93,10 @@ $expected = [
     'name' => 'no name',
     'token' => 'dummy_bearer_token',
     'my_cookie' => 'dummy_cookie_value',
+    'host' => 'example.com',
+    'json' => ['message' => 'hello'],
+    'zip' => ['GET', 'https'],
+    'port' => 8080,
 ];
 
 $contents = $response->getBody()->getContents();

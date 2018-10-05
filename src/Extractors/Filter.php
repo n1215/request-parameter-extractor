@@ -9,10 +9,10 @@ use N1215\RequestParameterExtractor\Extractors\Typed\Cast;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
- * Class Map
+ * Class Filter
  * @package N1215\RequestParameterExtractor\Extractors
  */
-class Map implements CastableExtractorInterface
+class Filter implements CastableExtractorInterface
 {
     use HighOrder;
     use Cast;
@@ -35,6 +35,12 @@ class Map implements CastableExtractorInterface
 
     public function extract(ServerRequestInterface $request)
     {
-        return \call_user_func($this->callback, $this->original->extract($request));
+        $value = $this->original->extract($request);
+
+        if (\call_user_func($this->callback, $value)) {
+            return $value;
+        }
+
+        return null;
     }
 }

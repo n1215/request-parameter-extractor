@@ -3,8 +3,6 @@ declare(strict_types=1);
 
 namespace N1215\RequestParameterExtractor\Extractors;
 
-use N1215\RequestParameterExtractor\ExtractorInterface;
-use N1215\RequestParameterExtractor\Extractors\Typed\Typing;
 use N1215\RequestParameterExtractor\StringExtractorInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -14,8 +12,7 @@ use Psr\Http\Message\ServerRequestInterface;
  */
 class FromHeaderLine implements StringExtractorInterface
 {
-    use Mappable;
-    use Typing;
+    use HighOrder;
 
     /**
      * @var string

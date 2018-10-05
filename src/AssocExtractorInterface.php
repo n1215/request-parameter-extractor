@@ -8,4 +8,6 @@ use Psr\Http\Message\ServerRequestInterface;
 interface AssocExtractorInterface extends ExtractorInterface
 {
     public function extract(ServerRequestInterface $request): array;
+
+    public function get(string $key): CastableExtractorInterface;
 }

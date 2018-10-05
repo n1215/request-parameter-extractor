@@ -6,7 +6,7 @@ namespace N1215\RequestParameterExtractor\Extractors\Typed;
 use N1215\RequestParameterExtractor\AssocExtractorInterface;
 use N1215\RequestParameterExtractor\ExtractorInterface;
 use N1215\RequestParameterExtractor\Extractors\ArrayKey\AssocGet;
-use N1215\RequestParameterExtractor\Extractors\Mappable;
+use N1215\RequestParameterExtractor\Extractors\HighOrder;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
@@ -15,7 +15,7 @@ use Psr\Http\Message\ServerRequestInterface;
  */
 class AsAssoc implements AssocExtractorInterface
 {
-    use Mappable;
+    use HighOrder;
     use AssocGet;
 
     /** @var ExtractorInterface */

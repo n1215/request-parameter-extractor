@@ -13,7 +13,7 @@ use Psr\Http\Message\ServerRequestInterface;
  */
 class FromHeader implements ArrayExtractorInterface
 {
-    use Mappable;
+    use HighOrder;
     use ArrayGet;
 
     /**
@@ -30,7 +30,7 @@ class FromHeader implements ArrayExtractorInterface
      * @param ServerRequestInterface $request
      * @return string[]
      */
-    public function extract(ServerRequestInterface $request): array
+    public function Cextract(ServerRequestInterface $request): array
     {
         return $request->getHeader($this->name);
     }
