@@ -42,17 +42,17 @@ class SampleRequestHandler implements RequestHandlerInterface
         $queryParams = $extractors->fromQueryParams();
 
         $this->extractor = $extractors->zipWithKey([
-            'id' => $queryParams->get('id')->asNullableInt()
-                ->map(function (int $id): Id {
+            'id' => $queryParams->get('id')->asInt(0)
+                ->bind(function (int $id): Id {
                     return new Id($id);
                 }),
             'name' => $queryParams->get('name')
-                ->filter(function (string $value) {
+                ->filter(function (?string $value): bool {
                     return !empty($value);
                 })
                 ->asString('no name'),
             'token' => $extractors->fromHeaderLine('Authorization')
-                ->map(function (string $value) {
+                ->bind(function (string $value): string {
                     return str_replace('Bearer ', '', $value);
                 }),
             'my_cookie' => $extractors->fromCookieParams()->get('my_cookie')->asNullableString(),
@@ -60,7 +60,7 @@ class SampleRequestHandler implements RequestHandlerInterface
             'json' => $extractors->fromBody()->getJson(),
             'zip' => $extractors->zip($extractors->fromMethod(), $extractors->fromUri()->getScheme()),
             'port' => $extractors
-                ->map(function (ServerRequestInterface $request) {
+                ->bind(function (ServerRequestInterface $request): ?int {
                     return $request->getUri()->getPort();
                 })
                 ->asNullableInt()

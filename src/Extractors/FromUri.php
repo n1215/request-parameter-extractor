@@ -28,56 +28,56 @@ class FromUri implements UriExtractorInterface
 
     public function getScheme(): StringExtractorInterface
     {
-        return $this->map(function (UriInterface $uri) {
+        return $this->bind(function (UriInterface $uri) {
             return $uri->getScheme();
         })->asString();
     }
 
     public function getAuthority(): StringExtractorInterface
     {
-        return $this->map(function (UriInterface $uri) {
+        return $this->bind(function (UriInterface $uri) {
             return $uri->getAuthority();
         })->asString();
     }
 
     public function getUserInfo(): StringExtractorInterface
     {
-        return $this->map(function (UriInterface $uri) {
+        return $this->bind(function (UriInterface $uri) {
             return $uri->getUserInfo();
         })->asString();
     }
 
     public function getHost(): StringExtractorInterface
     {
-        return $this->map(function (UriInterface $uri) {
+        return $this->bind(function (UriInterface $uri) {
             return $uri->getHost();
         })->asString();
     }
 
     public function getPort(): NullableIntExtractorInterface
     {
-        return $this->map(function (UriInterface $uri) {
+        return $this->bind(function (UriInterface $uri) {
             return $uri->getPort();
         })->asNullableInt();
     }
 
     public function getPath(): StringExtractorInterface
     {
-        return $this->map(function (UriInterface $uri) {
+        return $this->bind(function (UriInterface $uri) {
             return $uri->getPath();
         })->asString();
     }
 
     public function getQuery(): StringExtractorInterface
     {
-        return $this->map(function (UriInterface $uri) {
+        return $this->bind(function (UriInterface $uri) {
             return $uri->getQuery();
         })->asString();
     }
 
     public function getFragment(): StringExtractorInterface
     {
-        return $this->map(function (UriInterface $uri) {
+        return $this->bind(function (UriInterface $uri) {
             return $uri->getFragment();
         })
         ->asString();
@@ -85,7 +85,7 @@ class FromUri implements UriExtractorInterface
 
     public function toString(): StringExtractorInterface
     {
-        return $this->map(function (UriInterface $uri) {
+        return $this->bind(function (UriInterface $uri) {
             return $uri->__toString();
         })->asString();
     }

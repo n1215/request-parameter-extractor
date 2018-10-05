@@ -30,7 +30,7 @@ class FromBody implements BodyExtractorInterface
 
     public function getJson(): AssocExtractorInterface
     {
-        return $this->toString()->map(function (string $body) {
+        return $this->toString()->bind(function (string $body) {
             $result = \json_decode($body, true);
 
             if ($result === false || $result === null) {
@@ -43,21 +43,21 @@ class FromBody implements BodyExtractorInterface
 
     public function toString(): StringExtractorInterface
     {
-        return $this->map(function (StreamInterface $stream) {
+        return $this->bind(function (StreamInterface $stream) {
             return  $stream->__toString();
         })->asString();
     }
 
     public function getSize(): NullableIntExtractorInterface
     {
-        return $this->map(function (StreamInterface $stream) {
+        return $this->bind(function (StreamInterface $stream) {
             return  $stream->getSize();
         })->asNullableInt();
     }
 
     public function getMetaData($key = null): CastableExtractorInterface
     {
-        return $this->map(function (StreamInterface $stream) use ($key) {
+        return $this->bind(function (StreamInterface $stream) use ($key) {
             return  $stream->getMetadata($key);
         });
     }

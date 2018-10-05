@@ -61,9 +61,9 @@ class Factory
         return new Extractors\FromUri();
     }
 
-    public function map(callable $callback): CastableExtractorInterface
+    public function bind(callable $callback): CastableExtractorInterface
     {
-        return new Extractors\Map(new Extractors\Identity(), $callback);
+        return new Extractors\Bind(new Extractors\Identity(), $callback);
     }
 
     public function filter(callable $callback): CastableExtractorInterface

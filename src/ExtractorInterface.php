@@ -7,7 +7,7 @@ use Psr\Http\Message\ServerRequestInterface;
 
 interface ExtractorInterface
 {
-    public function map(callable $callback): CastableExtractorInterface;
+    public function bind(callable $callback): CastableExtractorInterface;
 
     public function filter(callable $callback): CastableExtractorInterface;
 

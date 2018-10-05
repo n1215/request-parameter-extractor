@@ -9,10 +9,10 @@ use N1215\RequestParameterExtractor\Extractors\Typed\Cast;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
- * Class Map
+ * Class Bind
  * @package N1215\RequestParameterExtractor\Extractors
  */
-class Map implements CastableExtractorInterface
+class Bind implements CastableExtractorInterface
 {
     use HighOrder;
     use Cast;

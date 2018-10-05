@@ -11,9 +11,9 @@ use N1215\RequestParameterExtractor\ExtractorInterface;
  */
 trait HighOrder
 {
-    public function map(callable $callback): CastableExtractorInterface
+    public function bind(callable $callback): CastableExtractorInterface
     {
-        return new Map($this, $callback);
+        return new Bind($this, $callback);
     }
 
     public function filter(callable $callback): CastableExtractorInterface
