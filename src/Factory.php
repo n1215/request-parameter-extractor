@@ -11,6 +11,16 @@ use N1215\RequestParameterExtractor\Extractors;
  */
 class Factory
 {
+    public function fromAttribute(string $name, $default = null): CastableExtractorInterface
+    {
+        return new Extractors\FromAttribute($name, $default);
+    }
+
+    public function fromAttributes(): AssocExtractorInterface
+    {
+        return new Extractors\FromAttributes();
+    }
+
     public function fromBody(): BodyExtractorInterface
     {
         return new Extractors\FromBody();
@@ -54,6 +64,11 @@ class Factory
     public function fromRequestTarget(): StringExtractorInterface
     {
         return new Extractors\FromRequestTarget();
+    }
+
+    public function fromUploadedFiles(): UploadedFilesExtractorInterface
+    {
+        return new Extractors\FromUploadedFiles();
     }
 
     public function fromUri(): UriExtractorInterface

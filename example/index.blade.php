@@ -7,12 +7,12 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
-class Id implements \JsonSerializable
+final class Id implements \JsonSerializable
 {
     /** @var int */
     private $value;
 
-    public function __construct(int $value)
+    private function __construct(int $value)
     {
         $this->value = $value;
     }
@@ -31,30 +31,56 @@ class Id implements \JsonSerializable
     {
         return ['value' => $this->value];
     }
+
+    public static function of(int $value): self
+    {
+        return new self($value);
+    }
 }
 
-class SampleRequestHandler implements RequestHandlerInterface
+abstract class AbstractExtractor implements \N1215\RequestParameterExtractor\AssocExtractorInterface
 {
-    private $extractor;
+    use \N1215\RequestParameterExtractor\Extractors\HighOrder;
+    use \N1215\RequestParameterExtractor\Extractors\Typed\Cast;
+    use \N1215\RequestParameterExtractor\Extractors\ArrayKey\AssocGet;
+
+    private $inner;
 
     public function __construct(\N1215\RequestParameterExtractor\Factory $extractors)
     {
-        $queryParams = $extractors->fromQueryParams();
+        $this->inner = $extractors->zipWithKey($this->createExtractorAssoc($extractors));
+    }
 
-        $this->extractor = $extractors->zipWithKey([
+    public function extract(ServerRequestInterface $request): array
+    {
+        return $this->inner->extract($request);
+    }
+
+    /**
+     * @param \N1215\RequestParameterExtractor\Factory $extractors
+     * @return \N1215\RequestParameterExtractor\ExtractorInterface[]
+     */
+    abstract protected function createExtractorAssoc(\N1215\RequestParameterExtractor\Factory $extractors): array;
+}
+
+class SampleExtractor extends AbstractExtractor
+{
+    protected function createExtractorAssoc(\N1215\RequestParameterExtractor\Factory $extractors): array
+    {
+        $queryParams = $extractors->fromQueryParams();
+        return [
             'id' => $queryParams->get('id')->asInt(0)
                 ->bind(function (int $id): Id {
-                    return new Id($id);
+                    return Id::of($id);
                 }),
             'name' => $queryParams->get('name')
                 ->filter(function (?string $value): bool {
                     return !empty($value);
-                })
-                ->asString('no name'),
+                })->asString('no name'),
             'token' => $extractors->fromHeaderLine('Authorization')
                 ->bind(function (string $value): string {
                     return str_replace('Bearer ', '', $value);
-                }),
+                })->asNullableString(),
             'my_cookie' => $extractors->fromCookieParams()->get('my_cookie')->asNullableString(),
             'host' => $extractors->fromUri()->getHost(),
             'json' => $extractors->fromBody()->getJson(),
@@ -63,8 +89,20 @@ class SampleRequestHandler implements RequestHandlerInterface
                 ->bind(function (ServerRequestInterface $request): ?int {
                     return $request->getUri()->getPort();
                 })
-                ->asNullableInt()
-        ]);
+                ->asNullableInt(),
+            'attribute' => $extractors->fromAttribute('my_attr')->asString(),
+        ];
+    }
+}
+
+class SampleRequestHandler implements RequestHandlerInterface
+{
+    /** @var \N1215\RequestParameterExtractor\AssocExtractorInterface */
+    private $extractor;
+
+    public function __construct(SampleExtractor $extractor)
+    {
+        $this->extractor = $extractor;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface
@@ -82,10 +120,11 @@ $request = (new \Zend\Diactoros\ServerRequestFactory())
         'id' => '1',
         'name' => ''
     ])
+    ->withAttribute('my_attr', 'dummy_attr_value')
     ->withHeader('Authorization', 'Bearer dummy_bearer_token')
     ->withCookieParams(['my_cookie' => 'dummy_cookie_value']);
 
-$handler = new SampleRequestHandler(new \N1215\RequestParameterExtractor\Factory());
+$handler = new SampleRequestHandler(new SampleExtractor(new \N1215\RequestParameterExtractor\Factory()));
 $response = $handler->handle($request);
 
 $expected = [
@@ -97,6 +136,7 @@ $expected = [
     'json' => ['message' => 'hello'],
     'zip' => ['GET', 'https'],
     'port' => 8080,
+    'attribute' => 'dummy_attr_value',
 ];
 
 $contents = $response->getBody()->getContents();

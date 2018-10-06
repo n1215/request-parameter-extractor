@@ -21,6 +21,10 @@ interface CastableExtractorInterface extends ExtractorInterface
 
     public function asNullableInt(): NullableIntExtractorInterface;
 
+    public function asObject(object $default = null): ObjectExtractorInterface;
+
+    public function asNullableObject(): NullableObjectExtractorInterface;
+
     public function asString(string $default = null): StringExtractorInterface;
 
     public function asNonEmptyString(string $default = null): NonEmptyStringExtractorInterface;

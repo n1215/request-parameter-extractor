@@ -35,6 +35,12 @@ class Bind implements CastableExtractorInterface
 
     public function extract(ServerRequestInterface $request)
     {
-        return \call_user_func($this->callback, $this->original->extract($request));
+        $value = $this->original->extract($request);
+
+        if ($value === null) {
+            return null;
+        }
+
+        return \call_user_func($this->callback, $value);
     }
 }

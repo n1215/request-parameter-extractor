@@ -13,7 +13,9 @@ use N1215\RequestParameterExtractor\NonEmptyStringExtractorInterface;
 use N1215\RequestParameterExtractor\NullableBoolExtractorInterface;
 use N1215\RequestParameterExtractor\NullableFloatExtractorInterface;
 use N1215\RequestParameterExtractor\NullableIntExtractorInterface;
+use N1215\RequestParameterExtractor\NullableObjectExtractorInterface;
 use N1215\RequestParameterExtractor\NullableStringExtractorInterface;
+use N1215\RequestParameterExtractor\ObjectExtractorInterface;
 use N1215\RequestParameterExtractor\StringExtractorInterface;
 
 /**
@@ -61,6 +63,16 @@ trait Cast
     public function asNullableInt(): NullableIntExtractorInterface
     {
         return new AsNullableInt($this);
+    }
+
+    public function asObject(object $default = null): ObjectExtractorInterface
+    {
+        return new AsObject($this, $default);
+    }
+
+    public function asNullableObject(): NullableObjectExtractorInterface
+    {
+        return new AsNullableObject($this);
     }
 
     public function asString(string $default = null): StringExtractorInterface
