@@ -30,7 +30,7 @@ class FromHeader implements ArrayExtractorInterface
      * @param ServerRequestInterface $request
      * @return string[]
      */
-    public function Cextract(ServerRequestInterface $request): array
+    public function extract(ServerRequestInterface $request): array
     {
         return $request->getHeader($this->name);
     }
