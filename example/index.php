@@ -108,12 +108,12 @@ class SampleRequestHandler implements RequestHandlerInterface
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
         $params = $this->extractor->extract($request);
-        return new \Zend\Diactoros\Response\JsonResponse($params);
+        return new \Laminas\Diactoros\Response\JsonResponse($params);
     }
 }
 
-$streamFactory = new \Zend\Diactoros\StreamFactory();
-$request = (new \Zend\Diactoros\ServerRequestFactory())
+$streamFactory = new \Laminas\Diactoros\StreamFactory();
+$request = (new \Laminas\Diactoros\ServerRequestFactory())
     ->createServerRequest('GET', 'https://example.com:8080')
     ->withBody($streamFactory->createStream('{"message": "hello"}'))
     ->withQueryParams([

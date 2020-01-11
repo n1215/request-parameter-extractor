@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace N1215\RequestParameterExtractor\Extractors;
 
 use PHPUnit\Framework\TestCase;
-use Zend\Diactoros\ServerRequestFactory;
+use Laminas\Diactoros\ServerRequestFactory;
 
 class ZipTest extends TestCase
 {
